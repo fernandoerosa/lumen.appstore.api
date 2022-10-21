@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\App;
-use Laravel\Lumen\Http\ResponseFactory;
 use PHPUnit\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApiController extends Controller
 {
 
     /**
      * @param Request $request
-     * @return JsonResponse|Response|ResponseFactory
+     * @return JsonResponse|Response
      */
     public function getAllApps(Request $request)
     {
@@ -28,13 +28,15 @@ class ApiController extends Controller
 
     /**
      * @param $id
-     * @return JsonResponse|Response
+     * @return JsonResponse|BinaryFileResponse
      */
     public function getApp($id)
     {
         if (App::where('id', $id)->exists()) {
-            $app = App::where('id', $id)->get()->toJson(JSON_PRETTY_PRINT);
-            return response($app, 200);
+            $app = App::where('id', $id);
+            $apkPath = $app->value('path');
+            $fileName = $app->value('package_name').".apk";
+            return response()->download($apkPath, $fileName);
         } else {
             return response()->json([
                 "message" => "App não encontrado!"
@@ -43,13 +45,13 @@ class ApiController extends Controller
     }
 
     /**
-     * @param $packageName
+     * @param $id
      * @return JsonResponse|Response
      */
-    public function getAppApk($packageName)
+    public function getAppApk($id)
     {
-        if (App::where('package_name', $packageName)->exists()) {
-            $app = App::where('package_name', $packageName)->get('path')->toJson(JSON_PRETTY_PRINT);
+        if (App::where('id', $id)->exists()) {
+            $app = App::where('id', $id)->get('path')->toJson(JSON_PRETTY_PRINT);
             return response($app, 200);
         } else {
             return response()->json(["message" => "App não encontrado!"]);
