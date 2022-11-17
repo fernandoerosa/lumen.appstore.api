@@ -1,18 +1,17 @@
 <?php
 
-/** @var Router $router */
+use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ApiController;
-use Laravel\Lumen\Routing\Router;
+Route::group(['prefix' => 'api', 'as' => 'api.'], function () {
 
-$router = app(Router::class);
+    Route::group(['prefix' => 'applications', 'as' => 'applications.'], function () {
+        Route::get('/{id}', 'ApiController@get')->name('get');
+        Route::get('/', 'ApiController@getAll')->name('get-all');
+        Route::get('/apk/{id}', 'ApiController@getAppApk')->name('get-app-apk');
+        Route::post('/create', 'ApiController@create')->name('create');
+        Route::put('/update/{id}', 'ApiController@update')->name('update');
+        Route::delete('/delete{id}', 'ApiController@delete')->name('delete');
+    });
 
-$router-> group(['prefix' => 'apps', 'as' => 'apps.'], function () use ($router) {
-    $router->get('/','ApiController@getAllApps');
-    $router->post('/create','ApiController@createApp');
-    $router->put('/update/{id}','ApiController@updateApp');
-    $router->delete('/delete{id}','ApiController@deleteApp');
-    $router->get('/{id}','ApiController@getApp');
-    $router->get('/apk/{id}', 'ApiController@getAppApk');
-}) ;
+});
 

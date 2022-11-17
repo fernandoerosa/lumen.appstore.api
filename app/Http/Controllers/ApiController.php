@@ -16,7 +16,7 @@ class ApiController extends Controller
      * @param Request $request
      * @return JsonResponse|Response
      */
-    public function getAllApps(Request $request)
+    public function getAll(Request $request)
     {
         try {
             $apps = App::get()->toJson(JSON_PRETTY_PRINT);
@@ -30,7 +30,7 @@ class ApiController extends Controller
      * @param $id
      * @return JsonResponse|BinaryFileResponse
      */
-    public function getApp($id)
+    public function get($id)
     {
         if (App::where('id', $id)->exists()) {
             $app = App::where('id', $id);
@@ -62,7 +62,7 @@ class ApiController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function createApp(Request $request): JsonResponse
+    public function create(Request $request): JsonResponse
     {
         try {
             App::create($request->all());
@@ -77,7 +77,7 @@ class ApiController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function updateApp(Request $request, $id): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         if (App::with('id', $id)->exists()) {
             $app = App::find($id);
@@ -92,7 +92,7 @@ class ApiController extends Controller
      * @param $id
      * @return JsonResponse
      */
-    public function deleteApp($id): JsonResponse
+    public function delete($id): JsonResponse
     {
         if (App::where('id', $id)->exists()) {
             $app = App::find($id);
